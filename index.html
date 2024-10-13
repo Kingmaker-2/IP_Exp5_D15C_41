@@ -1,35 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Promise-based Calculator</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="calculator-container">
-      <h1>Stylish Calculator</h1>
-      <div class="calculator">
-        <input type="number" id="number1" placeholder="Enter first number" />
-        <input type="number" id="number2" placeholder="Enter second number" />
-        <div class="buttons">
-          <button id="add">+</button>
-          <button id="subtract">-</button>
-          <button id="multiply">*</button>
-          <button id="divide">/</button>
-        </div>
-        <button id="checkResult">Check Result</button>
-        <button id="clear">Clear</button>
-        <div class="result" id="result">
-          Result: <span id="result-output"></span>
-        </div>
-        <div id="error-message"></div>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced JavaScript Assignment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #2d004d; /* Dark Purple */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .wrapper {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2); /* 3D Effect */
+      flex: 1;
+      max-width: 350px; /* Increased width */
+      min-height: 300px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    input {
+      padding: 10px;
+      width: calc(100% - 22px); /* Adjusting width to avoid overflow */
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.1); /* 3D Input Effect */
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 10px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 5px 15px rgba(0, 123, 255, 0.3);
+      background-color: #0056b3;
+    }
+    .result {
+      background-color: #28a745;
+    }
+    .result:hover {
+      background-color: #218838;
+    }
+    .clear {
+      background-color: #dc3545;
+    }
+    .clear:hover {
+      background-color: #c82333;
+    }
+    .output {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <!-- Calculator Section -->
+    <div class="container">
+      <h2>Basic Calculator</h2>
+      <input type="number" id="num1" placeholder="Enter First Number">
+      <input type="number" id="num2" placeholder="Enter Second Number">
+      <button onclick="operate('add')">+</button>
+      <button onclick="operate('sub')">-</button>
+      <button onclick="operate('mul')">×</button>
+      <button onclick="operate('div')">÷</button>
+      <br>
+      <button class="result" onclick="getResult()">Result</button>
+      <button class="clear" onclick="clearFields()">Clear</button>
+      <p id="output"></p>
     </div>
-    <script src="script.js"></script>
-  </body>
+
+    <!-- Iterator Section -->
+    <div class="container">
+      <h2>Custom Iterator</h2>
+      <button onclick="displaySquares()">Calculate Predefined Squares</button>
+      <p id="squaresOutput"></p>
+    </div>
+
+    <!-- Prime Number Generator Section -->
+    <div class="container">
+      <h2>Prime Generator</h2>
+      <input type="number" id="primeLimit" placeholder="Enter the range">
+      <button onclick="generatePrimes()">Generate Primes</button>
+      <p id="primesOutput"></p>
+    </div>
+  </div>
+
+  <script>
+    // 1. Basic Calculator Using Promises
+    let operation;
+
+    function calculate(num1, num2, operation) {
+      return new Promise((resolve, reject) => {
+        if (isNaN(num1) || isNaN(num2)) {
+          reject("Invalid Input");
+        }
+        if (operation === "add") {
+          resolve(num1 + num2);
+        } else if (operation === "sub") {
+          resolve(num1 - num2);
+        } else if (operation === "mul") {
+          resolve(num1 * num2);
+        } else if (operation === "div") {
+          if (num2 === 0) {
+            reject("Error: Division by zero");
+          } else {
+            resolve(num1 / num2);
+          }
+        } else {
+          reject("Invalid Input");
+        }
+      });
+    }
+
+    function operate(op) {
+      operation = op;
+    }
+
+    function getResult() {
+      const num1 = parseFloat(document.getElementById("num1").value);
+      const num2 = parseFloat(document.getElementById("num2").value);
+
+      calculate(num1, num2, operation)
+        .then(result => document.getElementById("output").textContent = "Result: " + result)
+        .catch(error => document.getElementById("output").textContent = error);
+    }
+
+    function clearFields() {
+      document.getElementById("num1").value = "";
+      document.getElementById("num2").value = "";
+      document.getElementById("output").textContent = "";
+    }
+
+    // 2. Custom Iterator for Squaring Numbers (Predefined Array)
+    const numbersArray = [2, 3, 5, 7, 11];
+
+    function displaySquares() {
+      const squareIterator = {
+        [Symbol.iterator]: function() {
+          let index = 0;
+          return {
+            next: function() {
+              if (index < numbersArray.length) {
+                const result = { value: numbersArray[index] ** 2, done: false };
+                index++;
+                return result;
+              } else {
+                return { done: true };
+              }
+            }
+          };
+        }
+      };
+
+      let output = '';
+      for (let square of squareIterator) {
+        output += square + ' '; // Correctly access square.value
+      }
+      document.getElementById("squaresOutput").textContent = "Squares: " + output;
+    }
+
+    // 3. Prime Number Generator
+    function* primeGenerator(limit) {
+      for (let num = 2; num <= limit; num++) {
+        if (isPrime(num)) {
+          yield num;
+        }
+      }
+    }
+
+    function isPrime(num) {
+      for (let i = 2, sqrt = Math.sqrt(num); i <= sqrt; i++) {
+        if (num % i === 0) {
+          return false;
+        }
+      }
+      return num > 1;
+    }
+
+    function generatePrimes() {
+      const limit = parseInt(document.getElementById("primeLimit").value);
+      const primes = primeGenerator(limit);
+      let output = '';
+      for (let prime of primes) {
+        output += prime + ' ';
+      }
+      document.getElementById("primesOutput").textContent = "Prime Numbers: " + output;
+    }
+  </script>
+
+</body>
 </html>
